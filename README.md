@@ -12,7 +12,7 @@ If you use this program, you have to sign up Twitter API Developper and Circle.m
 
 ## CAUTION!!
 
-1. Twitter official says no one allows to scrape her contents without permission. The program follows the rule, but if you remake sth from the program, you have to follow [her rule](https://help.twitter.com/en/rules-and-policies/twitter-rules).
+1. Twitter official says no one allows to scrape her contents without permission. The program follows the rules, but if you remake sth from the program, you have to follow [hers](https://help.twitter.com/en/rules-and-policies/twitter-rules).
 2. Even though you use the tool, me thinking about loading to servers supported by Twitter and Circle.ms, it takes you ONE DAY to complete calibration relating Twitter and Circle.ms data. If you scrape faster than the program and refurblish, YOU HAVE TO THINK ABOUT LOADING TO SERVERS SUPPORTED BY TWITTER, CIRCLE.MS AND SO ON (I EXPLICITLY DECLARE HERE). In the concrete, you just write program to scrape one page per one second, et cetra.
 
 ## copyright
