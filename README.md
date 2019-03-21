@@ -1,7 +1,7 @@
 # comiketpy
 
 Comic Market (日本語: コミックマーケット), every one calls Comiket (日本語: コミケ) is one of the most famous event in Japan. Comiket's official page is [HERE](https://www.comiket.co.jp/).
-About thirty thousand of circles and half an hundred of visitors participate in Tokyo Big Sight, Ariake Tokyo Japan, summer (about middle August) and winter (about last Decembre). There are so crowded by so many hot-blooded otakus crazy about manga, anime, computer game, and so on.
+About thirty thousand of circles and half an hundred of visitors participate in Tokyo Big Sight, Ariake Tokyo Japan, summer (about middle August) and winter (about end Decembre). There are so crowded by so many hot-blooded otakus crazy about manga, anime, computer game, and so on.
 I think it will be convinient if I get approximiate waiting time to purchase objects I want, so I made the program.
 
 ## register
