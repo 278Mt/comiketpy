@@ -1,4 +1,4 @@
-# comiketpy_public
+# comiketpy
 
 Comic Market is one of the most famous event in Japan. (Underconstruction)
 
