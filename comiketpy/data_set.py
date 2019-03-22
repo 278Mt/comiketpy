@@ -21,8 +21,8 @@ get Circle.ms Data and Twitter Data
 ################################################################
 
 import json
-import os
 import pandas as pd
+import os
 import re
 import requests
 import tweepy
@@ -32,7 +32,7 @@ from getpass import getpass
 from statistics import mean
 from time import sleep
 
-Base_dir = os.path.abspath("./../")
+Base_dir = os.path.abspath("./")
 
 ################################################################
 #
@@ -183,8 +183,6 @@ class AnalyzeCircleMs(object):
 
         print("コミックマーケット参加者 ID （落選を含む）を取得します。")
 
-        session = self.session
-
         # held days of comiket as of 2018 winter
         # in 2019 comiket will be held 4 days, so Days will be rewritten Days = (1,2,3,4,99)
         # they mean participants of 1st day, 2nd day, 3rd day, and rejected ones in comiket
@@ -195,6 +193,9 @@ class AnalyzeCircleMs(object):
         target_csv = Base_dir+"/resources/circle_ms_all_id.csv"
         with open(target_csv, mode="w") as file:
             file.write("Id\n")
+
+        session = self.session
+
         for day in Days:
 
             Target_url = "https://webcatalog-free.circle.ms/Circle?Day=" + str(day)
@@ -269,21 +270,20 @@ class AnalyzeCircleMs(object):
         print(datetime.today(), "コミックマーケット参加者の情報（落選を含む）を取得します。")
         target_csv = Base_dir+"/resources/circle_ms_all_id.csv"
 
-        session = self.session
-
         Series = pd.read_csv(target_csv, dtype="object")["Id"]
 
-        all_circle_info = []
-
         target_csv = Base_dir+"/resources/all_circle_info.csv"
-        header = {}
-        for i in ["Name","Id","TwitterId","PixivId","Day","Hall","Block","Space"]:
-            header[i] = i
 
-        df = pd.io.json.json_normalize(header)
-        df.to_csv(target_csv, mode="w", header=False, index=False)
+        with open(target_csv, mode="w") as file:
+            file.write("")
+
+        columns = ["Id","Day","Hall","Block","Space","Name","Author","Genre","PixivId","TwitterId"]
+        all_circle_info = [{i: i for i in columns}]
 
         pages = len(Series)
+
+        session = self.session
+
         for i in range(pages):
 
             Target_url = "https://webcatalog-free.circle.ms/Circle/" + str(Series[i])
@@ -301,8 +301,8 @@ class AnalyzeCircleMs(object):
                 print(datetime.today(), "Wait 5 minutes....")
 
                 # write csv file by mode of adding a postscript
-                df = pd.io.json.json_normalize(all_circle_info)
-                df = df.loc[:,["Id","Day","Hall","Block","Space","Name","Author","Genre","PixivId","TwitterId"]]
+                pre_df = pd.io.json.json_normalize(all_circle_info)
+                df = pre_df.loc[:,["Id","Day","Hall","Block","Space","Name","Author","Genre","PixivId","TwitterId"]]
                 df.to_csv(target_csv, mode="a", header=False, index=False)
 
                 all_circle_info = []
@@ -318,7 +318,8 @@ class AnalyzeCircleMs(object):
                 print(datetime.today(), "Circle.ms のデータは残り", pages-i-1, "ページあります。")
 
         # write csv file by mode of adding a postscript
-        df = pd.io.json.json_normalize(all_circle_info)
+        pre_df = pd.io.json.json_normalize(all_circle_info)
+        df = pre_df.loc[:,["Id","Day","Hall","Block","Space","Name","Author","Genre","PixivId","TwitterId"]]
         df.to_csv(target_csv, mode="a", header=False, index=False)
 
         print("全てのコミックマーケット参加者の情報（落選を含む）を取得しました。")
@@ -332,14 +333,14 @@ class AnalyzeCircleMs(object):
         Day, Hall, Block, Space = (string[1:-1] for string in re.findall("'.*?'", Location))
 
         # get author information
-        target_th = re.search('<th>執筆者名</th>(.|\s)*?</td>', Target_html)
+        target_th = re.search('<th>執筆者名</th>(.|\s)*?</td>', Target_html).group(0)
         soup = BeautifulSoup(target_th, "html.parser")
-        Author = soup.find("td").text
+        Author = re.search(".*", soup.find("td").text).group(0)[:-1]
 
         # get genre information
-        target_th = re.search('<th class="col2">ジャンル</th>(.|\s)*?</td>', Target_html)
+        target_th = re.search('<th.*?>ジャンル</th>(.|\s)*?</td>', Target_html).group(0)
         soup = BeautifulSoup(target_th, "html.parser")
-        Genre = soup.find("td").text
+        Genre = soup.find("td").text.split("\n")[1][:-1]
 
         res = {
             "Name"     : Name,
@@ -425,7 +426,7 @@ class AnalyzeTwitter(object):
                 df.to_csv(target_csv, mode="w", index=False)
 
             try:
-                df.loc[i,"TwitterFollowers"] = int(self.get_followers_count(user_id=int(Series[i])))
+                df.loc[i,"TwitterFollowers"] = str(self.get_followers_count(user_id=int(Series[i])))
             except:
                 df.loc[i,"TwitterFollowers"] = ""
 
@@ -445,18 +446,4 @@ class AnalyzeTwitter(object):
         sleep(1)
 
         return res
-
-if __name__ == '__main__':
-
-    pass
-
-    #ACM = AnalyzeCircleMs()
-    #ACM.make_csv_all_id()
-    #ACM.make_csv_all_circle_info()
-
-    #MCT = AnalyzeTwitter()
-    #MCT.get_all_followers_count()
-
-    #AP = AnalyzePixiv()
-    #AP.get_all_favors_count()
 
